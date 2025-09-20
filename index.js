@@ -1,5 +1,6 @@
 const express= require("express");
 const mongoose = require("mongoose");
+require("dotenv").config();
 
 const path=require("path");
 const {handlernewcreatedsortid, handleranlytic }=require("./controlers/url");
@@ -17,7 +18,7 @@ const app=express();
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 app.use(session({
-  secret:"my_secret_key",
+  secret:process.env.SESSION_SECRET,
   resave:false,
   saveUninitialized:false,
   cookie: {
@@ -30,7 +31,7 @@ app.set("views",path.resolve("./views"));
 
 
 
-mongoose.connect("mongodb://127.0.0.1:27017/urlShortener")
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(err));
  
@@ -85,10 +86,15 @@ app.get("/url/:shortid", async (req, res) => {
   // Browser ko redirect karo original url pe
   res.redirect(entry.givenid);
 });
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something went wrong!");
+});
 
 
 
-app.listen(8000,()=>{
+
+app.listen(process.env.PORT,()=>{
     console.log("server is started ");
 })
 
