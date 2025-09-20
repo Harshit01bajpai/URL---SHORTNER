@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>adminuser</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { color: #333; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+    th { background-color: #f4f4f4; }
+    tr:nth-child(even) { background-color: #fafafa; }
+    .logout { float: right; margin-top: -40px; }
+  </style>
+</head>
+<body>
+  <h1>Admin Dashboard</h1>
+  <a href="/logout" class="logout">Logout</a>
+
+  <p>Welcome, <strong><%= user.name %></strong> (Role: <%= user.role %>)</p>
+
+  <h2>All Shortened URLs</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Original URL</th>
+        <th>Short ID</th>
+        <th>Clicks</th>
+        <th>View</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% urls.forEach(url => { %>
+        <tr>
+          <td><%= url.userId ? url.userId.email : "Unknown" %></td>
+          <td><%= url.givenid %></td>
+          <td><%= url.shortid %></td>
+          <td><%= url.clicks %></td>
+          <td><a href="/url/<%= url.shortid %>" target="_blank">Open</a></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</body>
+</html>
