@@ -3,7 +3,7 @@ const shortid = require('shortid');
 
 async function handlernewcreatedsortid(req,res){
   const body=req.body;
- const shortId=shortid.generate();
+ const shortId = req.body.customId || shortid.generate();
    if(!body.url) return res.status(400).json({error: "URL is required"});
  await url.create({
     shortid: shortId,
@@ -11,6 +11,7 @@ async function handlernewcreatedsortid(req,res){
     vistedHistory:[],
     clicks:0,
     userId: req.session.user._id,
+    expiryAt:new Date(Date.now() + (7 * 24 * 60 * 60 * 1000)),
  });
 return res.render("home",{id:shortId});
 

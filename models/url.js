@@ -9,9 +9,16 @@ const userSchema =new mongoose.Schema({
         type:String,
         required:true
     },
-    vistedHistory:[{timestamp:{type:Number}}],
+    vistedHistory:[{timestamp:{type:Number},
+       useragent: {type:String},
+       ip:{type:String},}
+
+    ],
      userId: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },
      clicks: { type: Number, default: 0 } ,
+     expiryAt: {
+        type:Date,
+     }
 
     
 },

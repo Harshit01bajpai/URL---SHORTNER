@@ -62,7 +62,18 @@ mongoose.connect(process.env.MONGO_URI)
       user:req.session.user,
     })
   })
-  app.get("/analytic/:shortid",handleranlytic);
+ app.get("/analytics/:shortid", checkauth, async (req, res) => {
+  const entry = await url.findOne({ shortid: req.params.shortid });
+
+  if (!entry) {
+    return res.status(404).send("URL not found");
+  }
+
+  res.render("analytics", {
+    url: entry,
+    user: req.session.user
+  });
+});
 
 app.get("/url/:shortid", async (req, res) => {
   const shortID = req.params.shortid;
@@ -70,7 +81,9 @@ app.get("/url/:shortid", async (req, res) => {
   const entry = await url.findOneAndUpdate(
     { shortid: shortID }, // find by shortid
     {
-      $push: { vistedHistory: { timestamp: Date.now() } } // track visit
+      $push: { vistedHistory: { timestamp: Date.now() },
+    useragent: req.headers["user-agent"], // ✅ browser info
+          ip: req.ip } // track visit
     },
     {
      $inc: { clicks: 1 }},
