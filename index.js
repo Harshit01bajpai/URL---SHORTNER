@@ -81,14 +81,16 @@ app.get("/url/:shortid", async (req, res) => {
   const entry = await url.findOneAndUpdate(
     { shortid: shortID }, // find by shortid
     {
-      $push: { vistedHistory: { timestamp: Date.now() },
-    useragent: req.headers["user-agent"], // ✅ browser info
-          ip: req.ip } // track visit
+       $push: {
+        vistedHistory: {
+          timestamp: Date.now(),
+          userAgent: req.headers["user-agent"], 
+          ip: req.ip
+        }
+      },
+      $inc: { clicks: 1 }
     },
-    {
-     $inc: { clicks: 1 }},
-
-    { new: true } // return updated doc
+    { new: true } // return updated document
   );
 
   // Agar shortid mila hi nahi
@@ -99,6 +101,8 @@ app.get("/url/:shortid", async (req, res) => {
   // Browser ko redirect karo original url pe
   res.redirect(entry.givenid);
 });
+
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send("Something went wrong!");

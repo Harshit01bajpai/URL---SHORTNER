@@ -10,7 +10,7 @@ const userSchema =new mongoose.Schema({
         required:true
     },
     vistedHistory:[{timestamp:{type:Number},
-       useragent: {type:String},
+       userAgent: {type:String},
        ip:{type:String},}
 
     ],

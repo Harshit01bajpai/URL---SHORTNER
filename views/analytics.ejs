@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Analytics for <%= url.shortid %></title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body class="p-4">
+
+  <h2>Analytics for <%= url.shortid %></h2>
+  <p>Original URL: <a href="<%= url.givenid %>" target="_blank"><%= url.givenid %></a></p>
+  <p>Total Clicks: <%= url.vistedHistory.length %></p>
+
+  <h4>Click History</h4>
+  <table class="table table-bordered table-striped">
+    <tr>
+      <th>Time</th>
+      <th>Browser Info</th>
+      <th>IP</th>
+    </tr>
+    <% url.vistedHistory.forEach(v => { %>
+      <tr>
+        <td><%= new Date(v.timestamp).toLocaleString() %></td>
+        <td><%= v.userAgent %></td>
+        <td><%= v.ip %></td>
+      </tr>
+    <% }) %>
+  </table>
+
+  <h4>Clicks per Day</h4>
+<canvas id="clicksChart"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const data = JSON.parse('<%- JSON.stringify(url.vistedHistory) %>');
+
+  // Group clicks by date
+  const counts = {};
+  data.forEach(v => {
+    const date = new Date(v.timestamp).toLocaleDateString();
+    counts[date] = (counts[date] || 0) + 1;
+  });
+
+  const ctx = document.getElementById('clicksChart');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: Object.keys(counts),
+      datasets: [{
+        label: 'Clicks per day',
+        data: Object.values(counts),
+        backgroundColor: 'rgba(54, 162, 235, 0.6)'
+      }]
+    }
+  });
+</script>
